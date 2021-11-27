@@ -5,6 +5,7 @@ use std::error::Error;
 use std::process;
 use log::{debug, error, info};
 use env_logger::Env;
+use std::time::{Instant};
 
 struct Account {
     id: u64,
@@ -116,6 +117,8 @@ fn write_accounts_to_file(accounts: &Vec<Account>) -> Result<(), Box<dyn Error>>
 
 fn run(num_accounts: u64, num_transactions: u64, default_balance: u64) -> Result<(), Box<dyn Error>> {
     
+    let start = Instant::now();
+
     // Generate Accounts
     let accounts = generate_accounts(num_accounts, default_balance);
 
@@ -135,9 +138,14 @@ fn run(num_accounts: u64, num_transactions: u64, default_balance: u64) -> Result
     if let Err(err) = write_accounts_to_file(&accounts) {
         error!("{}", err);
     }
-    
+
+    let duration = start.elapsed();
+
+    // println!("Time elapsed in expensive_function() is: {:?}", duration);
+
+
     // let
-    info!("Finished Account Generation");
+    info!("Finished Account Generation finished in {:?} ", duration);
 
     Ok(())
 }
@@ -145,7 +153,7 @@ fn run(num_accounts: u64, num_transactions: u64, default_balance: u64) -> Result
 // Main
 fn main() {
     env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
-    info!("Generating Account and Transaction Data");
+    
 
     // debug!("Mary has a little lamb");
     // error!("{}", "Its fleece was white as snow");
@@ -170,6 +178,8 @@ fn main() {
     if let Some(c) = matches.value_of("balance") {
         default_balance = c.parse::<u64>().unwrap();
     }
+
+    info!("Generating Account and Transaction Data");
 
     info!("Num Accounts: {}", num_accounts);
     info!("Num Transactions: {}", num_transactions);

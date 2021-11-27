@@ -12,6 +12,10 @@ Generator Random Accounts and Transaction Data
     cargo run -- -t 10 -a 10
     cargo run -- -a 10 -t 50 -b 1000
 
+    cargo run -- -a 100 -t 10000 -b 1000
+    cargo run -- -a 1000 -t 1000000 -b 1000
+    cargo run -- -a 1000 -t 10000000 -b 1000
+
 ## Arguments
 
 Run `-h` for options
