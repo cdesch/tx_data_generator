@@ -16,7 +16,7 @@ struct Account {
 struct Transaction {
     sender_id: u64,
     receiver_id: u64,
-    value: u64,
+    amount: u64,
 }
 
 // Choose two accounts with and send a valid transaction
@@ -44,16 +44,16 @@ fn generate_transaction(accounts: &Vec<Account>) -> Transaction {
     create_transaction(first_account, second_account)
 }
 
-// Create a transction from two accounts with a random value
+// Create a transction from two accounts with a random amount
 fn create_transaction(sender: &Account, receiver: &Account) -> Transaction {
 
-    let value = rand::thread_rng().gen_range(1..sender.balance);
+    let amount = rand::thread_rng().gen_range(1..sender.balance);
 
     // Return Transaction
     Transaction {
         sender_id: sender.id,
         receiver_id: receiver.id,
-        value: value
+        amount: amount
     }
 }
 
@@ -79,12 +79,12 @@ fn write_transactions_to_file(transactions: &Vec<Transaction>) -> Result<(), Box
     let mut wtr = csv::Writer::from_path("transactions.csv")?;
     
     // Header
-    wtr.write_record(&["sender_id", "receiver_id", "value"])?;
+    wtr.write_record(&["sender_id", "receiver_id", "amount"])?;
 
     // Write Transactions
     for transaction in transactions {
-        debug!("sender: {} receiver: {} value {}", transaction.sender_id, transaction.receiver_id, transaction.value);
-        wtr.write_record(&[transaction.sender_id.to_string(), transaction.receiver_id.to_string(), transaction.value.to_string()])?;
+        debug!("sender: {} receiver: {} amount {}", transaction.sender_id, transaction.receiver_id, transaction.amount);
+        wtr.write_record(&[transaction.sender_id.to_string(), transaction.receiver_id.to_string(), transaction.amount.to_string()])?;
     }
 
     // A CSV writer maintains an internal buffer, so it's important
