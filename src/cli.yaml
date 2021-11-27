@@ -1,0 +1,22 @@
+name: tx_data_generator
+version: "0.1.0"
+author: cj <cdesch@gmail.com>
+about: Generator Random Accounts and Transaction Data
+args:
+    - num_transactions:
+        short: t
+        long: transactions
+        value_name: NUM_TRANSACTIONS
+        about: number of transactions to generate
+        takes_value: true
+    - num_accounts:
+        short: a
+        long: accounts
+        value_name: NUM_ACCOUNTS
+        about: number of Accounts to generate
+    - balance:
+        short: b
+        long: balance
+        value_name: BALANCE
+        about: default balance for each account
+        
