@@ -72,7 +72,7 @@ fn create_transaction(sender: &Account, receiver: &Account) -> Transaction {
 // Generate Accounts sequentialy
 fn generate_accounts(num_accounts: u64, balance: u64) -> Vec<Account> {
     let mut accounts = Vec::new();
-    for n in 0..num_accounts {
+    for n in 1..num_accounts + 1 {
         debug!("ID: {}", n);
         let account = Account {
             id: n,
@@ -86,8 +86,11 @@ fn generate_accounts(num_accounts: u64, balance: u64) -> Vec<Account> {
 }
 
 // Write Transactions to File
-fn write_transactions_to_file(transactions: &Vec<Transaction>) -> Result<(), Box<dyn Error>> {
-    let mut wtr = csv::Writer::from_path(format!("transactions_{}.csv", transactions.len()))?;
+fn write_transactions_to_file(
+    transactions: &Vec<Transaction>,
+    filename: String,
+) -> Result<(), Box<dyn Error>> {
+    let mut wtr = csv::Writer::from_path(format!("{}_{}.csv", filename, transactions.len()))?;
     // Header
     wtr.write_record(&["sender_id", "receiver_id", "amount"])?;
 
@@ -111,8 +114,8 @@ fn write_transactions_to_file(transactions: &Vec<Transaction>) -> Result<(), Box
 }
 
 // Write Accounts to file
-fn write_accounts_to_file(accounts: &Vec<Account>) -> Result<(), Box<dyn Error>> {
-    let mut wtr = csv::Writer::from_path(format!("accounts_{}.csv", accounts.len()))?;
+fn write_accounts_to_file(accounts: &Vec<Account>, filename: String) -> Result<(), Box<dyn Error>> {
+    let mut wtr = csv::Writer::from_path(format!("{}_{}.csv", filename, accounts.len()))?;
     // Header
     wtr.write_record(&["id", "name", "balance"])?;
 
@@ -145,14 +148,19 @@ fn run(
     // Generate Accounts
     let mut accounts = generate_accounts(num_accounts, default_balance);
 
+    // Write Initial Account balances
+    if let Err(err) = write_accounts_to_file(&accounts, "accounts".to_string()) {
+        error!("{}", err);
+    }
+
     // Generate Transactions
     let mut transactions: Vec<Transaction> = Vec::new();
     for _n in 0..num_transactions {
         let transaction = generate_transaction(&accounts);
         // Update the accounts
-        let sender = &mut accounts[transaction.sender_id as usize];
+        let sender = &mut accounts[(transaction.sender_id - 1) as usize];
         sender.balance = sender.balance - transaction.amount;
-        let receiver = &mut accounts[transaction.receiver_id as usize];
+        let receiver = &mut accounts[(transaction.receiver_id - 1) as usize];
         receiver.balance = receiver.balance + transaction.amount;
 
         // Push onto the array
@@ -160,17 +168,20 @@ fn run(
     }
 
     // Write to CSV
-    if let Err(err) = write_transactions_to_file(&transactions) {
+    if let Err(err) = write_transactions_to_file(&transactions, "transactions".to_string()) {
         error!("{}", err);
     }
 
-    if let Err(err) = write_accounts_to_file(&accounts) {
-        error!("{}", err);
-    }
-
+    // Print Accounts Ending Balances
     for account in &accounts {
-        info!("balance: {}", account.balance);
+        info!("account: {} balance: {}", account.id, account.balance);
     }
+
+    // Write Ending Account balances
+    if let Err(err) = write_accounts_to_file(&accounts, "accounts_ending".to_string()) {
+        error!("{}", err);
+    }
+
     let duration = start.elapsed();
 
     // println!("Time elapsed in expensive_function() is: {:?}", duration);
