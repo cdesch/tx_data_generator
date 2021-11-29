@@ -14,6 +14,7 @@ Generator Random Accounts and Transaction Data
 
     cargo run -- -a 100 -t 10000 -b 1000
     cargo run -- -a 1000 -t 1000000 -b 1000
+    RUST_BACKTRACE=1 cargo run -- -a 1000 -t 1000000 -b 1000
     cargo run -- -a 1000 -t 10000000 -b 1000
 
 ## Arguments

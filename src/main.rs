@@ -26,7 +26,7 @@ fn generate_transaction(accounts: &Vec<Account>) -> Transaction {
     // // Choose First Account
     let mut first_account = accounts.choose(&mut rand::thread_rng()).unwrap();
     // Choose another account if the balance is 0
-    while first_account.balance <= 0 {
+    while first_account.balance <= 1 {
         first_account = accounts.choose(&mut rand::thread_rng()).unwrap();
         // TODO: add error condition to prevent infinite loop
     }
@@ -37,9 +37,19 @@ fn generate_transaction(accounts: &Vec<Account>) -> Transaction {
     while first_account.id == second_account.id {
         second_account = &mut accounts.choose(&mut rand::thread_rng()).unwrap();
     }
+    // debug!(
+    //     "first_account {} second_account {}",
+    //     first_account.id, second_account.id
+    // );
+
     debug!(
-        "first_account {} second_account {}",
-        first_account.id, second_account.id
+        "first_account id: {} name: {} balance: {}",
+        first_account.id, first_account.name, first_account.balance
+    );
+
+    debug!(
+        "second_account id: {} name: {} balance: {}",
+        second_account.id, second_account.name, second_account.balance
     );
     // first_account.balance -= 5;
     // Create the Transaction
@@ -49,6 +59,7 @@ fn generate_transaction(accounts: &Vec<Account>) -> Transaction {
 // Create a transction from two accounts with a random amount
 fn create_transaction(sender: &Account, receiver: &Account) -> Transaction {
     let amount = rand::thread_rng().gen_range(1..sender.balance);
+    debug!("amount {}", amount);
     // TODO: Update Balance
     // Return Transaction
     Transaction {
@@ -76,7 +87,7 @@ fn generate_accounts(num_accounts: u64, balance: u64) -> Vec<Account> {
 
 // Write Transactions to File
 fn write_transactions_to_file(transactions: &Vec<Transaction>) -> Result<(), Box<dyn Error>> {
-    let mut wtr = csv::Writer::from_path("transactions.csv")?;
+    let mut wtr = csv::Writer::from_path(format!("transactions_{}.csv", transactions.len()))?;
     // Header
     wtr.write_record(&["sender_id", "receiver_id", "amount"])?;
 
@@ -101,7 +112,7 @@ fn write_transactions_to_file(transactions: &Vec<Transaction>) -> Result<(), Box
 
 // Write Accounts to file
 fn write_accounts_to_file(accounts: &Vec<Account>) -> Result<(), Box<dyn Error>> {
-    let mut wtr = csv::Writer::from_path("accounts.csv")?;
+    let mut wtr = csv::Writer::from_path(format!("accounts_{}.csv", accounts.len()))?;
     // Header
     wtr.write_record(&["id", "name", "balance"])?;
 
@@ -172,12 +183,12 @@ fn run(
 
 // Main
 fn main() {
-    env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
+    // Default Log Level
+    let log_level = "info";
+    // let log_level = "debug";
+    env_logger::Builder::from_env(Env::default().default_filter_or(log_level)).init();
+    // env_logger::Builder::from_env(Env::default().default_filter_or("debug")).init();
 
-    // debug!("Mary has a little lamb");
-    // error!("{}", "Its fleece was white as snow");
-    // info!("{:?}", "And every where that Mary went");
-    // warn!("{:#?}", "The lamb was sure to go");
     let mut num_accounts = 10;
     let mut num_transactions = 10;
     let mut default_balance = 100;
