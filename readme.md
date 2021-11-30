@@ -2,6 +2,8 @@
 
 Generator Random Accounts and Transaction Data
 
+This CLI tool generates accounts and transaction data to `csv` in various sizes to be used as input data for benchmarking
+
 ## Build
 
     cargo build
@@ -19,7 +21,7 @@ Generator Random Accounts and Transaction Data
     RUST_BACKTRACE=1 cargo run -- -a 1000 -t 1000000 -b 1000
     cargo run -- -a 1000 -t 10000000 -b 1000
 
-## Arguments
+## CLI Arguments
 
 Run `-h` for options
 
