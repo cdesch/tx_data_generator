@@ -16,7 +16,9 @@ This CLI tool generates accounts and transaction data to `csv` in various sizes 
 
     cargo run -- -a 100 -t 10000 -b 1000
     cargo run -- -a 1000 -t 100 -b 1000
+    cargo run -- -a 1000 -t 500 -b 1000
     cargo run -- -a 1000 -t 1000 -b 1000
+    cargo run -- -a 1000 -t 2000 -b 1000
     cargo run -- -a 1000 -t 10000 -b 1000
     cargo run -- -a 1000 -t 100000 -b 1000
     cargo run -- -a 1000 -t 1000000 -b 1000
